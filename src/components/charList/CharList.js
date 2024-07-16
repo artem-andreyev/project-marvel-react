@@ -1,6 +1,5 @@
 import './charList.scss';
 import { Component } from 'react';
-import abyss from '../../resources/img/abyss.jpg';
 import MarvelService from '../../services/MarvelService';
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
@@ -14,6 +13,12 @@ class CharList extends Component {
     }
 
     marvelService = new MarvelService();
+
+    componentDidMount() {
+        this.marvelService.getAllCharacters()
+            .then(this.onCharListLoaded)
+            .catch(this.onError)
+    }
 
     onCharListLoaded = (charList) => {
         this.setState({
@@ -29,14 +34,8 @@ class CharList extends Component {
         })
     }
 
-    componentDidMount() {
-        this.marvelService.getAllCharacters()
-            .then(this.onCharListLoaded)
-            .catch(this.onError)
-    }
-
     renderItems(arr) {
-        const items =  arr.map((item) => {
+        const items =  arr.map((item) => {  
             let imgStyle = {'objectFit' : 'cover'};
             if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
                 imgStyle = {'objectFit' : 'unset'};
@@ -51,7 +50,7 @@ class CharList extends Component {
                 </li>
             )
         });
-        // А эта конструкция вынесена для центровки спиннера/ошибки
+
         return (
             <ul className="char__grid">
                 {items}
