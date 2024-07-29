@@ -39,35 +39,31 @@ const CharList = () => {
             ended = true;
         }
 
-        this.setState(({offset, charList}) => ({
-            charList: [...charList, ...newCharList],
-            loading: false,
-            newItemLoading: false,
-            offset: offset + 9,
-            charEnded: ended
-        }))
+        setCharList(charList => [...charList, ...newCharList])
+        setLoading(loading => false);
+        setNewItemLoading(newItemLoading => false);
+        setOffset(offset => offset + 9);
+        setCharEnded(charEnded => ended);
     }
 
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
+    const onError = () => {
+        setError(true);
+        setLoading(loading => false);
     }
 
-    itemRefs = [];
+    const itemRefs = useRef([]);
 
     setRef = (ref) => {
         this.itemRefs.push(ref);
     }
 
-    focusOnItem = (id) => {
-        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
-        this.itemRefs[id].classList.add('char__item_selected');
-        this.itemRefs[id].focus();
+    const focusOnItem = (id) => {
+        itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
+        itemRefs.current[id].classList.add('char__item_selected');
+        itemRefs.current[id].focus();
     }
 
-    renderItems(arr) {
+    function renderItems(arr) {
         const items =  arr.map((item, i) => {  
             let imgStyle = {'objectFit' : 'cover'};
             if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
