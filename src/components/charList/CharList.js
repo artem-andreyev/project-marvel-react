@@ -7,7 +7,7 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import './charList.scss';
 
-const CharList = () => {
+const CharList = (props) => {
 
     const [charList, setCharList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -53,10 +53,6 @@ const CharList = () => {
 
     const itemRefs = useRef([]);
 
-    setRef = (ref) => {
-        this.itemRefs.push(ref);
-    }
-
     const focusOnItem = (id) => {
         itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
         itemRefs.current[id].classList.add('char__item_selected');
@@ -74,16 +70,16 @@ const CharList = () => {
                 <li
                     className="char__item"
                     tabIndex={0}
-                    ref={this.setRef}
+                    ref={el => itemRefs.current[i] = el}
                     key={item.id}
                     onClick={() => {
-                        this.props.onCharSelected(item.id);
-                        this.focusOnItem(i);
+                        props.onCharSelected(item.id);
+                        focusOnItem(i);
                     }}
                     onKeyDown={(e) => {
                         if (e.key === ' ' || e.key === "Enter") {
-                            this.props.onCharSelected(item.id);
-                            this.focusOnItem(i);
+                            props.onCharSelected(item.id);
+                            focusOnItem(i);
                         }
                     }}>
                         <img src={item.thumbnail} alt={item.name} style={imgStyle}/>
@@ -98,32 +94,27 @@ const CharList = () => {
             </ul>
         )
     }
+    
+    const items = renderItems(charList);
 
-    render() {
+    const errorMessage = error ? <ErrorMessage/> : null;
+    const spinner = loading ? <Spinner/> : null;
+    const content = !(loading || error) ? items : null;
 
-        const {charList, loading, error, offset, newItemLoading, charEnded} = this.state;
-        
-        const items = this.renderItems(charList);
-
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error) ? items : null;
-
-        return (
-            <div className="char__list">
-                {errorMessage}
-                {spinner}
-                {content}
-                <button 
-                    className="button button__main button__long"
-                    disabled={newItemLoading}
-                    style={{"display": charEnded ? "none" : "block"}}
-                    onClick={() => this.onRequest(offset)}>
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
-    }
+    return (
+        <div className="char__list">
+            {errorMessage}
+            {spinner}
+            {content}
+            <button 
+                className="button button__main button__long"
+                disabled={newItemLoading}
+                style={{"display": charEnded ? "none" : "block"}}
+                onClick={() => onRequest(offset)}>
+                <div className="inner">load more</div>
+            </button>
+        </div>
+    )
 }
 
 CharList.propTypes = {
