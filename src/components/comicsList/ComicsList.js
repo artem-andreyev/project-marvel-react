@@ -1,8 +1,40 @@
+import { useState, useEffect, useRef } from 'react';
+
+import useMarvelService from '../../services/MarvelService';
+import Spinner from '../spinner/Spinner';
+import ErrorMessage from '../errorMessage/ErrorMessage';
+
 import './comicsList.scss';
 import uw from '../../resources/img/UW.png';
 import xMen from '../../resources/img/x-men.png';
 
-const ComicsList = () => {
+const ComicsList = (props) => {
+
+    const [comicsList, setComicsList] = useState([]);
+    const [newItemLoading, setNewItemLoading] = useState(false);
+    const [offset, setOffset] = useState(210);
+    const [comicsEnded, setComicsEnded] = useState(false);
+    
+    const {loading, error, getAllCharacters, getComics, getAllComics} = useMarvelService();
+
+    const onRequest = (offset, initial) => {
+        initial ? setNewItemLoading(false) : setNewItemLoading(true);
+        getAllComics(offset)
+            .then(onComicsListLoaded)
+    }
+
+    const onComicsListLoaded = (newCharList) => {
+        let ended = false;
+        if (newCharList.length < 9) {
+            ended = true;
+        }
+
+        setComicsList(comicsList => [...comicsList, ...newCharList])
+        setNewItemLoading(newItemLoading => false);
+        setOffset(offset => offset + 9);
+        setComicsEnded(comicsEnded => ended);
+    }
+    
     return (
         <div className="comics__list">
             <ul className="comics__grid">
