@@ -1,22 +1,27 @@
-import {Formik, Form, Field, ErrorMessage, useField} from "formik";
+import {useState} from "react";
+import {Formik, Form, Field, ErrorMessage as FormikErrorMessage, useField} from "formik";
 import * as Yup from "yup";
+import {Link} from "react-router-dom";
+
+import useMarvelService from "../../services/MarvelService";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 import "./charSearchForm.scss";
 
 const CharSearchForm = () => {
+    const [char, setChar] = useState(null);
+    const {loading, error, getCharacterByName, clearError} = useMarvelService();
 
-    const MyTextInput = ({label, ...props}) => {
-        const [field, meta] = useField(props);
-        return (
-            <>
-                <label htmlFor={props.name}>{label}</label>
-                <input {...props} {...field}/>
-                {meta.touched && meta.error ? (
-                    <div className="error">{meta.error}</div>
-                ) : null}
-            </>
-        )
-    };
+    const onCharLoaded = (char) => {
+        setChar(char);
+    }
+
+    const updateChar = (name) => {
+        clearError();
+
+        getCharacterByName(name)
+            .then(onCharLoaded);
+    }
 
     return (
         <Formik
@@ -31,7 +36,7 @@ const CharSearchForm = () => {
     >
         <Form className='form'>
             <h2>Or find a character by name: </h2>
-            <MyTextInput
+            <input
                 label="Enter name"
                 name="name"
         />
