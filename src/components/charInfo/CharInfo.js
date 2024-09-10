@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import PropTypes from "prop-types";
+import { Helmet } from 'react-helmet';
 
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -60,6 +61,13 @@ const View = ({char}) => {
     return (
         <>
             <div className="char__basics">
+                <Helmet>
+                    <meta
+                        name="description"
+                        content={name}
+                        />
+                    <title>{name}</title>
+                </Helmet>
                 <img src={thumbnail} alt={name} style={imgStyle}/>
                 <div>
                     <div className="char__info-name">{name}</div>

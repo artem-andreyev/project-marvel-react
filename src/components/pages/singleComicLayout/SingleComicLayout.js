@@ -12,7 +12,7 @@ const SingleComicLayout = ({data}) => {
             <Helmet>
                 <meta
                     name="description"
-                    content={`${title} comics book`}
+                    content={title}
                     />
                 <title>{title}</title>
             </Helmet>
