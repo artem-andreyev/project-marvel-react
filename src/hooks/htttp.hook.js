@@ -20,7 +20,6 @@ export const useHttp = () => {
             const data = await response.json();
 
             setLoading(false);
-            setProcess("confirmed");
             return data;
         } catch(e) {
             setLoading(false);
@@ -35,5 +34,5 @@ export const useHttp = () => {
         setProcess("loading");
     }, []);
 
-    return {loading, request, error, clearError, process}
+    return {loading, request, error, clearError, process, setProcess}
 }
